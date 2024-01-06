@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "G8LXEYBkyTWRy68fL6z5lGbDZ9m9ajFKE8GdlVEoaas9eHu+wKIz9+BnlZPHPcKiaecjyySk4TpMqzSEDN+58g==",
+  "success": true,
+  "projectFilePath": "/Users/frankie/Desktop/Career/pulsenic-app/pulsenic-app/pulsenic-app.csproj",
+  "expectedPackageFiles": [
+    "/Users/frankie/.nuget/packages/mathnet.numerics/5.0.0/mathnet.numerics.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,96 @@
+﻿@using pulsenic_app.Models
+@model pulsenic_app.Models.HomeViewModel
+
+<canvas id="graph" width="500" height="400" class="section-spacing"></canvas>
+<p>Equation of best fit curve: @Model.Equation</p>
+
+<form method="post" class="section-spacing" action="/Home/Index">
+    <label for="X">X:</label>
+    <input type="number" name="X" id="X" class="number-input" />
+    <label for="Y">Y:</label>
+    <input type="number" name="Y" id="Y" class="number-input" />
+    <input id="AddPointButton" type="Submit" value="Add Point" disabled />
+</form>
+
+<input type="radio" id="Linear" /> Linear
+<input type="radio" id="Quadratic" /> Quadratic
+<input type="radio" id="Cubic" /> Cubic
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        // Sets the initial state of which curve was selected
+        if ('@Model.Curve' === "LINEAR") document.getElementById("Linear").checked = true;
+        else if ('@Model.Curve' === "QUADRATIC") document.getElementById("Quadratic").checked = true;
+        else document.getElementById("Cubic").checked = true;
+
+        document.getElementById("Linear").addEventListener("click", function () {
+            window.location.href = '@Url.Action("Index", "Home")';
+        });
+        document.getElementById("Quadratic").addEventListener("click", function () {
+            window.location.href = '@Url.Action("Quadratic", "Home")';
+        });
+        document.getElementById("Cubic").addEventListener("click", function () {
+            window.location.href = '@Url.Action("Cubic", "Home")';
+        });
+
+        // Disable user from submitting invalid Point values
+        const xInput = document.getElementById("X");
+        const yInput = document.getElementById("Y");
+        const submitButton = document.getElementById("AddPointButton");
+        xInput.addEventListener("input", function (element) {
+            if (element.target.value === "") submitButton.disabled = true;
+            else if (document.getElementById("Y").value !== "") submitButton.disabled = false;
+        });
+        yInput.addEventListener("input", function (element) {
+            if (element.target.value === "") submitButton.disabled = true;
+            else if (document.getElementById("X").value !== "") submitButton.disabled = false;
+        });
+
+        // Correctly deserialize string of data points
+        function deserializePoints(points) {
+            const pointsString = points.replaceAll("&quot;", "\"").replaceAll("X", "x").replaceAll("Y", "y");
+            return JSON.parse(pointsString);
+        }
+        const dataPoints = deserializePoints('@Model.Points');
+        const bestFitPoints = deserializePoints('@Model.CurvePoints');
+
+        // Sets the data and configuration in chart element
+        const graphChart = document.getElementById("graph");
+        const graph = new Chart(graphChart, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    {
+                        label: 'Data Points',
+                        data: dataPoints,
+                    },
+                    {
+                        // I couldn't figure out an elegant way to show best fit curve using Chart.js
+                        // so I decided to just plot high number of points to make them look like a
+                        // best fit curve
+                        label: 'Best Fit Curve',
+                        data: bestFitPoints,
+                        pointRadius: 0,
+                        borderWidth: 0.4,
+                        showLine: true,
+                    },
+                ],
+            },
+            options: {
+                animation: {
+                    duration: 0 // prevents data points from dancing on the chart when loading page
+                },
+                hover: { mode: null }, // prevents data points from animating when you hover them
+                plugins: {
+                    tooltip: {
+                        enabled: false // prevents data points from displaying tooltip when you hover them
+                    }
+                },
+                responsive: false, // fixes an issue where the chart always take up the entire screen
+            }
+        });
+    })
+</script>

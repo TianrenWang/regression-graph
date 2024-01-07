@@ -10,9 +10,9 @@ namespace pulsenic_app.Models
         private static List<Point> LinearPoints = new();
         private static List<Point> QuadraticPoints = new();
         private static List<Point> CubicPoints = new();
-        private static string LinearEquation = "Not Enough Points";
-        private static string QuadraticEquation = "Not Enough Points";
-        private static string CubicEquation = "Not Enough Points";
+        private static string LinearEquation = "Need at least 2 points";
+        private static string QuadraticEquation = "Need at least 3 points";
+        private static string CubicEquation = "Need at least 4 points";
 
         public static void AddPoint(Point point)
         {
